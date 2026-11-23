@@ -7,8 +7,6 @@ local Http = require("yaknigi/http")
 
 local Updater = {}
 
-Updater.RELEASES = os.getenv("YB_UPDATE_URL")
-    or "https://github.com/ioannde/kindle-yaknigi-client/releases/latest/download"
 Updater.ARCHIVE = "yaknigi-update.tar"
 Updater.DAY = 24 * 60 * 60
 local MAX_REDIRECTS = 5
@@ -26,6 +24,11 @@ local function read_line(path)
     return text ~= "" and text or nil
 end
 Updater.read_line = read_line
+
+-- The releases of the repository the build was made in: the build writes RELEASES, so a fork
+-- with its own registration at oauth.yandex.ru is updated from its own releases, not from these.
+Updater.RELEASES = os.getenv("YB_UPDATE_URL") or read_line(HERE .. "/RELEASES")
+    or "https://github.com/ioannde/kindle-yaknigi-client/releases/latest/download"
 
 --- The build's version; written by the release build, and "dev" in any other.
 function Updater.version()

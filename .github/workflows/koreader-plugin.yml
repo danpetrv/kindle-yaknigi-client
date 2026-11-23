@@ -84,6 +84,8 @@ jobs:
           # The versions before 0.9.11 compare base, which held the launcher's digest then:
           # 0.9.9's, the last one most have, so that they update too.
           legacy_base="$KO_VERSION-a8e7a9bb"
+          # Updates come from where the build was made: a fork's from its own releases.
+          echo "https://github.com/$GITHUB_REPOSITORY/releases/latest/download" > "$plugin/yaknigi/RELEASES"
           mkdir -p update
           if [ -n "$version" ]; then
               echo "$version" > "$plugin/yaknigi/VERSION"

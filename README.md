@@ -4,6 +4,10 @@
 своим простым интерфейсом, работает на KOReader. KOReader уже входит в сборку, отдельно
 его ставить не нужно. Книги из подписки открываются только при активной подписке Яндекс Книг.
 
+Это форк [ioannde/kindle-yaknigi-client](https://github.com/ioannde/kindle-yaknigi-client)
+со своей регистрацией приложения в Яндексе и своими релизами: сборки отсюда входят через своё
+приложение и обновляются только из релизов этого репозитория.
+
 ## Какие Kindle подходят
 
 Важна версия прошивки. Её можно посмотреть на самом Kindle: Settings → Device Options →
@@ -16,14 +20,14 @@ Device Info.
 | ниже 5.16.3 | не подходит: для этих прошивок сборки нет |
 
 Если у вас другая модель или прошивка и программа заработала либо нет, напишите об этом в
-[Issues](https://github.com/ioannde/kindle-yaknigi-client/issues).
+[Issues](https://github.com/danpetrv/kindle-yaknigi-client/issues).
 
 ## Установка
 
 0. Сделайте джейлбрейк. Способ зависит от модели и прошивки, инструкции есть на
    [kindlemodding.org](https://kindlemodding.org). Его вы делаете сами и на свой риск.
 1. Скачайте `yaknigi-ko-kindlehf.zip` со страницы
-   [релизов](https://github.com/ioannde/kindle-yaknigi-client/releases) и распакуйте архив.
+   [релизов](https://github.com/danpetrv/kindle-yaknigi-client/releases) и распакуйте архив.
 2. Подключите Kindle к компьютеру по USB и скопируйте папки `extensions` и `documents` в
    корень Kindle. Если такие папки там уже есть, файлы нужно добавить к ним, не заменяя
    сами папки.
@@ -44,7 +48,7 @@ Device Info.
 можно добавить в него только плагин, без нашей сборки.
 
 1. Скачайте `yaknigi.koplugin.zip` со страницы
-   [релизов](https://github.com/ioannde/kindle-yaknigi-client/releases) и распакуйте архив.
+   [релизов](https://github.com/danpetrv/kindle-yaknigi-client/releases) и распакуйте архив.
 2. Скопируйте папку `yaknigi.koplugin` в папку `plugins` внутри папки KOReader:
    - PocketBook: `applications/koreader/plugins`;
    - Kobo: `.adds/koreader/plugins`;
@@ -106,6 +110,10 @@ KOReader распространяется по GNU AGPL версии 3.
 `YANDEX_CLIENT_ID`. Без него сборка останавливается с ошибкой. При запуске без сборки
 идентификатор берётся из переменной окружения `YB_CLIENT_ID` или файла
 `yaknigi/client_id.lua` с содержимым `return "..."`.
+
+Обновления сборка берёт из релизов того репозитория, где её собрали: адрес пишется в
+`yaknigi/RELEASES`. Поэтому форк обновляется из своих релизов, а не из чужих, где лежит другой
+Client ID. Для проверки адрес можно задать переменной окружения `YB_UPDATE_URL`.
 
 ### Выпуск версии
 

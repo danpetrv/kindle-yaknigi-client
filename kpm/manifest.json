@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "id": "yaknigi-ko",
   "name": "Клиент для Яндекс Книг",
-  "author": "ioannde",
+  "author": "danpetrv, ioannde",
   "description": "Неофициальный клиент Яндекс Книг на движке KOReader.",
   "version": [1, 0, 0],
   "dependencies": [],
