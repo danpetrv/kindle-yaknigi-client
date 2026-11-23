@@ -2530,6 +2530,9 @@ local function script()
     end
     tap_widget(login.enter_button)
     local dialog = code_dialog("the code dialog")
+    -- The emulator counts as having a real keyboard, as a Paperwhite 12 does: its own buttons
+    -- come as kindle-input-pt, a keyboard to KOReader. The code is still typed on the screen.
+    if not dialog._input_widget:isKeyboardVisible() then fail("no on-screen keyboard for the code") end
     -- Back is back on the steps, and the steps lead to the same dialog.
     press(dialog, "Назад")
     wait("the steps again", function() return top().name == "YaknigiLogin" end)
