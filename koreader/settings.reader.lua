@@ -36,6 +36,10 @@ return {
         invert_progress_direction = false,
     },
     ["reader_footer_mode"] = 6,
+    -- The on-screen keyboard even where KOReader sees a keyboard. A Paperwhite 12 has its own
+    -- buttons as kindle-input-pt, which the kernel calls a keyboard; with the external keyboard
+    -- plugin off it still had no keyboard in the code dialog (5.20.2), and this brought it.
+    ["virtual_keyboard_enabled"] = true,
     -- Nothing here is reachable from the app's screens. Gestures would also add its own
     -- corner taps and swipes, and the rest only take time and memory at each start.
     ["plugins_disabled"] = {
