@@ -1,0 +1,60 @@
+name: Upstream sync
+# Once a day: when ioannde's repository has a release this fork has not merged, the release goes
+# into a branch of its own, a pull request is opened, and the tests run on that branch.
+# Merging it and tagging a new version stay by hand.
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+concurrency:
+  group: upstream-sync
+jobs:
+  sync:
+    if: github.repository != 'ioannde/kindle-yaknigi-client'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge upstream's latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPSTREAM: ioannde/kindle-yaknigi-client
+        run: |
+          tag=$(gh release view -R "$UPSTREAM" --json tagName --jq .tagName)
+          echo "$tag" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' || { echo "::error::odd upstream tag: $tag"; exit 1; }
+          git fetch --no-tags "https://github.com/$UPSTREAM.git" "refs/tags/$tag"
+          commit=$(git rev-parse 'FETCH_HEAD^{commit}')
+          if git merge-base --is-ancestor "$commit" HEAD; then
+              echo "Upstream $tag is already in main."
+              exit 0
+          fi
+          branch="sync/upstream-$tag"
+          # A branch left from before: its pull request is open, or was closed on purpose.
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+              echo "$branch is already there."
+              exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          if ! git merge --no-ff --no-edit -m "Merge upstream $tag" "$commit"; then
+              echo "::error::upstream $tag conflicts with this fork: git fetch upstream --tags && git merge $tag, by hand"
+              exit 1
+          fi
+          # The workflow's token may not push changes to .github/workflows.
+          if ! git push origin "$branch"; then
+              echo "::error::could not push $branch (does $tag change .github/workflows?): git fetch upstream --tags && git merge $tag, by hand"
+              exit 1
+          fi
+          gh pr create --base main --head "$branch" --title "Upstream $tag" --body "Новый релиз автора: https://github.com/$UPSTREAM/releases/tag/$tag
+
+          Тесты на этой ветке запущены отдельным прогоном «KOReader plugin» (вкладка Actions).
+          После слияния выпусти новую версию: следующий тег vX.Y.Z после текущего."
+          # A pull request opened with this token starts no workflows; a dispatch does.
+          gh workflow run koreader-plugin.yml --ref "$branch"
