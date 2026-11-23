@@ -1,0 +1,13 @@
+<svg width="500" height="750" viewBox="0 0 500 750" xmlns="http://www.w3.org/2000/svg">
+  <!-- The scriptlet's cover in the Kindle library: rendered to a 500x750 PNG with PT Serif Bold and put into yaknigi.sh as "# Icon: data:image/png;base64,..." -->
+  <rect width="500" height="750" fill="#fff"/>
+  <!-- The app's own Yandex Books icon (koreader/yaknigi.koplugin/yaknigi/icons/yandex-books.svg), drawn large -->
+  <g transform="translate(106 110) scale(12)" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 3L10 9.5L17 3V21H3V3Z"/>
+    <path d="M6 11.5H14C14 15 12.4 17.2 10 17.2C7.6 17.2 6 15 6 11.5Z" fill="#fff"/>
+    <path d="M14 11.5H21C21 15 19.8 17.2 17.5 17.2C15.2 17.2 14 15 14 11.5Z" fill="#fff"/>
+  </g>
+  <line x1="150" y1="465" x2="350" y2="465" stroke="#000" stroke-width="3"/>
+  <text x="250" y="560" text-anchor="middle" font-family="PT Serif" font-weight="bold" font-size="86" fill="#000">Яндекс</text>
+  <text x="250" y="655" text-anchor="middle" font-family="PT Serif" font-weight="bold" font-size="86" fill="#000">Книги</text>
+</svg>
