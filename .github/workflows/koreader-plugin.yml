@@ -33,6 +33,8 @@ jobs:
         run: YB_CLIENT_ID=test-client luajit tests/lua/run.lua
       - name: Installing an update
         run: sh tests/update/apply_test.sh
+      - name: What the launcher changes in KOReader's
+        run: sh tests/update/run_test.sh
       - name: Certificate checks
         run: cd "$KO_DIR" && ./luajit "$GITHUB_WORKSPACE/tests/ko/tls_check.lua" "$GITHUB_WORKSPACE/koreader/yaknigi.koplugin"
       - name: UI against the mock server
