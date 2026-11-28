@@ -1039,7 +1039,16 @@ local function test_reading_screen()
     say("sleep screen shows", cover:match("[^/]*$"))
     if G_reader_settings:readSetting("screensaver_img_background") ~= "white" then fail("no flash before the sleep screen") end
     if G_reader_settings:isTrue("screensaver_stretch_images") then fail("a book's cover is stretched") end
-    -- The cover fills the screen, as CSS's background-size: cover: cut evenly, never a white band.
+    -- Unless chosen otherwise the cover is stretched over the screen, with nothing to cut.
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= nil then fail("the cover's fit is set before it was chosen") end
+    if require("yaknigi/prefs").sleep_cover_fit() ~= "stretch" then fail("the cover is not stretched unless chosen") end
+    for _, entry in ipairs(settings:entries()) do
+        if entry.key == "sleep_cover_crop" then fail("where to cut is asked of the cover stretched as it starts") end
+    end
+    -- Filling the screen, as CSS's background-size: cover: cut evenly, never a white band.
+    tap_widget(settings_row(settings, "sleep_cover_fit"))
+    tap_widget(settings.options[1])
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "fill" then fail("filling not chosen") end
     do
         local Screensaver = require("ui/screensaver")
         Screensaver:setup("suspend")
@@ -1087,7 +1096,6 @@ local function test_reading_screen()
     tap_widget(settings_row(settings, "sleep_cover_crop"))
     tap_widget(settings.options[1])
     -- Or whole, as before, if so chosen in the settings: KOReader shows the file itself.
-    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= nil then fail("the cover's fit is set before it was chosen") end
     tap_widget(settings_row(settings, "sleep_cover_fit"))
     tap_widget(settings.options[2])
     if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "fit" then fail("the whole cover was not chosen") end
