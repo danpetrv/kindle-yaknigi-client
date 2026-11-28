@@ -131,7 +131,7 @@ if APP_MODE then
         -- KOReader's setup has turned "document_cover" into "cover" by now.
         if Prefs.sleep_cover_fit() == "fill" and saver.screensaver_type == "cover"
             and cover and saver.image_file == cover then
-            local ok, image = pcall(function() return require("yaknigi/sleepcover").render(cover) end)
+            local ok, image = pcall(function() return require("yaknigi/sleepcover").render(cover, Prefs.sleep_cover_crop()) end)
             if ok and image then
                 saver.image, saver.image_file = image, nil
                 saver.screensaver_type = "cover"

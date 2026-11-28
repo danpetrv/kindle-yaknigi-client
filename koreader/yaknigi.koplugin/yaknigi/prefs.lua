@@ -131,6 +131,18 @@ Prefs.SLEEP_COVER_FITS = {
     { "fit", "Целиком" },
 }
 
+--- Where a cover taller than the screen is cut, filling it.
+Prefs.SLEEP_COVER_CROPS = {
+    { "both", "Сверху и снизу" },
+    { "bottom", "Только снизу" },
+    { "top", "Только сверху" },
+}
+
+function Prefs.sleep_cover_crop()
+    local crop = G_reader_settings:readSetting("yaknigi_sleep_cover_crop")
+    return (crop == "bottom" or crop == "top") and crop or "both"
+end
+
 function Prefs.sleep_cover_fit()
     return G_reader_settings:readSetting("yaknigi_sleep_cover_fit") == "fit" and "fit" or "fill"
 end

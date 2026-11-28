@@ -102,6 +102,13 @@ function Settings:appRows(heading, choice)
         G_reader_settings:saveSetting("yaknigi_sleep_cover_fit", fits[i])
     end, "На весь экран — обложка заполняет экран, лишнее по краям обрезается. Целиком — видна вся, "
         .. "с полосами по сторонам, если её пропорции не как у экрана.")
+    if Prefs.sleep_cover_fit() == "fill" then
+        local crops, crop_labels = {}, {}
+        for i, item in ipairs(Prefs.SLEEP_COVER_CROPS) do crops[i], crop_labels[i] = item[1], item[2] end
+        choice("sleep_cover_crop", "Обрезать", crop_labels, index_of(crops, Prefs.sleep_cover_crop()) or 1, function(i)
+            G_reader_settings:saveSetting("yaknigi_sleep_cover_crop", crops[i])
+        end, "Где обрезать обложку, которая выше экрана. Широкая обложка обрезается по бокам поровну.")
+    end
     local minutes = {}
     for i, m in ipairs(Prefs.SLEEP_MINUTES) do minutes[i] = m .. " мин" end
     choice("sleep_time", "Уходить в сон через", minutes, nearest(Prefs.SLEEP_MINUTES, Prefs.sleep_minutes()), function(i)
