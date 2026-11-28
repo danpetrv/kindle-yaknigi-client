@@ -1059,6 +1059,20 @@ local function test_reading_screen()
         require("device").screen_saver_mode = false
         UIManager:forceRePaint()
     end
+    -- Or whole, as before, if so chosen in the settings: KOReader shows the file itself.
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= nil then fail("the cover's fit is set before it was chosen") end
+    tap_widget(settings_row(settings, "sleep_cover_fit"))
+    tap_widget(settings.options[2])
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "fit" then fail("the whole cover was not chosen") end
+    do
+        local Screensaver = require("ui/screensaver")
+        Screensaver:setup("suspend")
+        if Screensaver.image or Screensaver.image_file ~= cover then fail("the whole cover is not KOReader's own") end
+        Screensaver:cleanup()
+    end
+    tap_widget(settings_row(settings, "sleep_cover_fit"))
+    tap_widget(settings.options[1])
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "fill" then fail("the cover does not fill again") end
 
     -- One's own picture: until there is one, the cover; then the newest in its folder.
     local Prefs = require("yaknigi/prefs")

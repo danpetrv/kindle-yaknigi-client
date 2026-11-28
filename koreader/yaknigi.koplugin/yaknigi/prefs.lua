@@ -125,6 +125,16 @@ function Prefs.sleep_screen()
     return G_reader_settings:readSetting("yaknigi_sleep_screen") or "cover"
 end
 
+--- How a book's cover takes the sleep screen: "fill", cut to fill it, or "fit", whole.
+Prefs.SLEEP_COVER_FITS = {
+    { "fill", "На весь экран" },
+    { "fit", "Целиком" },
+}
+
+function Prefs.sleep_cover_fit()
+    return G_reader_settings:readSetting("yaknigi_sleep_cover_fit") == "fit" and "fit" or "fill"
+end
+
 function Prefs.sleep_minutes()
     return math.floor((G_reader_settings:readSetting("auto_suspend_timeout_seconds") or 900) / 60 + 0.5)
 end

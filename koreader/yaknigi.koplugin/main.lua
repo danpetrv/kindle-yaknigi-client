@@ -123,9 +123,22 @@ if APP_MODE then
     local Screensaver = require("ui/screensaver")
     -- A picture of one's own may have been copied since the app started.
     local setup = Screensaver.setup
-    Screensaver.setup = function(...)
+    Screensaver.setup = function(saver, ...)
         Prefs.apply_sleep_screen()
-        return setup(...)
+        local result = setup(saver, ...)
+        -- A book's cover filling the screen is a picture made now; whole, it is KOReader's own.
+        local cover = G_reader_settings:readSetting("yaknigi_last_cover")
+        if Prefs.sleep_cover_fit() == "fill" and saver.screensaver_type == "document_cover"
+            and cover and saver.image_file == cover then
+            local ok, image = pcall(function() return require("yaknigi/sleepcover").render(cover) end)
+            if ok and image then
+                saver.image, saver.image_file = image, nil
+                saver.screensaver_type = "cover"
+            elseif not ok then
+                logger.warn("yaknigi: the cover could not fill the sleep screen:", image)
+            end
+        end
+        return result
     end
     local close_widget = Screensaver.close_widget
     Screensaver.close_widget = function(this)
