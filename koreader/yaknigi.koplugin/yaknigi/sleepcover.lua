@@ -19,9 +19,9 @@ function SleepCover.center_y(crop)
 end
 
 --- The picture as large as the screen, from the cover's file, cut where crop says ("both",
--- "bottom" or "top"; a cover wider than the screen is cut at its sides alike); nil when the file
--- cannot be read.
-function SleepCover.render(file, crop)
+-- "bottom" or "top"; a cover wider than the screen is cut at its sides alike), or with stretch
+-- the whole cover pulled to the screen's shape; nil when the file cannot be read.
+function SleepCover.render(file, crop, stretch)
     local Blitbuffer = require("ffi/blitbuffer")
     local ImageWidget = require("ui/widget/imagewidget")
     local RenderImage = require("ui/renderimage")
@@ -37,7 +37,8 @@ function SleepCover.render(file, crop)
         image = image,
         width = w,
         height = h,
-        scale_factor = SleepCover.fill_scale(image:getWidth(), image:getHeight(), w, h),
+        -- No scale at all is ImageWidget's stretch to the box.
+        scale_factor = not stretch and SleepCover.fill_scale(image:getWidth(), image:getHeight(), w, h) or nil,
         center_y_ratio = SleepCover.center_y(crop),
         alpha = true,
         original_in_nightmode = false,
