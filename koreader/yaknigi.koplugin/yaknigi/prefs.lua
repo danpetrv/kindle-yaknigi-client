@@ -125,6 +125,33 @@ function Prefs.sleep_screen()
     return G_reader_settings:readSetting("yaknigi_sleep_screen") or "cover"
 end
 
+--- How a book's cover takes the sleep screen: "fill", cut to fill it, "fit", whole, or
+-- "stretch", whole over the whole screen, out of shape.
+Prefs.SLEEP_COVER_FITS = {
+    { "fill", "На весь экран" },
+    { "fit", "Целиком" },
+    { "stretch", "Растянуть" },
+}
+
+--- Where a cover taller than the screen is cut, filling it.
+Prefs.SLEEP_COVER_CROPS = {
+    { "both", "Сверху и снизу" },
+    { "bottom", "Только снизу" },
+    { "top", "Только сверху" },
+}
+
+function Prefs.sleep_cover_crop()
+    local crop = G_reader_settings:readSetting("yaknigi_sleep_cover_crop")
+    return (crop == "bottom" or crop == "top") and crop or "both"
+end
+
+--- Stretched unless chosen otherwise: a cover and the screen differ little in shape, and on paper
+-- the cover pulled to fit reads better than one cut or with bands at its sides.
+function Prefs.sleep_cover_fit()
+    local fit = G_reader_settings:readSetting("yaknigi_sleep_cover_fit")
+    return (fit == "fill" or fit == "fit") and fit or "stretch"
+end
+
 function Prefs.sleep_minutes()
     return math.floor((G_reader_settings:readSetting("auto_suspend_timeout_seconds") or 900) / 60 + 0.5)
 end
