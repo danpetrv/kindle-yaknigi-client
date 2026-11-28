@@ -1112,5 +1112,30 @@ do
     eq(SleepCover.center_y(nil), 0.5, "sleep cover: alike when nothing was chosen")
 end
 
+-- the Kindle's own sleep screen: KOReader is told it draws none, on the way to sleep and back
+do
+    local SystemSleep = require("yaknigi/systemsleep")
+    local seen = {}
+    local device = { supportsScreensaver = function() return true end }
+    function device:intoScreenSaver(source) seen[#seen + 1] = { self:supportsScreensaver(), source } end
+    function device:outofScreenSaver(source) seen[#seen + 1] = { self:supportsScreensaver(), source } end
+    local wanted = true
+    SystemSleep.install(device, function() return wanted end)
+    device:intoScreenSaver(2)
+    device:outofScreenSaver(1)
+    eq(seen[1][1], false, "system sleep: KOReader draws none going to sleep")
+    eq(seen[2][1], false, "system sleep: nor waking up")
+    eq(seen[1][2], 2, "system sleep: what caused it goes on")
+    eq(device:supportsScreensaver(), true, "system sleep: KOReader's own again after")
+    wanted = false
+    device:intoScreenSaver(2)
+    eq(seen[3][1], true, "system sleep: KOReader's own when not chosen")
+    wanted = true
+    function device:intoScreenSaver() error("broken") end
+    SystemSleep.install(device, function() return wanted end)
+    eq(pcall(device.intoScreenSaver, device), false, "system sleep: a failure goes on")
+    eq(device:supportsScreensaver(), true, "system sleep: KOReader's own again after a failure")
+end
+
 print(("%d passed, %d failed"):format(passed, failed))
 os.exit(failed == 0 and 0 or 1)

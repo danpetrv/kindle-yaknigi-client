@@ -1024,8 +1024,13 @@ local function test_reading_screen()
 
     -- The sleep screen: the cover of the open book, or the page as it is.
     tap_widget(settings_row(settings, "sleep_screen"))
-    -- The cover, the collection, one's own picture, the page.
-    if #settings.options ~= 4 then fail("the sleep screens: " .. #settings.options) end
+    -- The cover, the collection, one's own picture, the page, the Kindle's own.
+    if #settings.options ~= 5 then fail("the sleep screens: " .. #settings.options) end
+    tap_widget(settings.options[5])
+    if G_reader_settings:readSetting("yaknigi_sleep_screen") ~= "kindle" then fail("the Kindle's own sleep screen not chosen") end
+    -- KOReader draws nothing of its own then: the Kindle does.
+    if G_reader_settings:readSetting("screensaver_type") ~= "disable" then fail("KOReader draws a sleep screen of its own for the Kindle's") end
+    tap_widget(settings_row(settings, "sleep_screen"))
     tap_widget(settings.options[4])
     if G_reader_settings:readSetting("screensaver_type") ~= "disable" then fail("sleep screen stays on the cover") end
     tap_widget(settings_row(settings, "sleep_screen"))
