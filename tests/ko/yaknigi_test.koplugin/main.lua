@@ -1039,6 +1039,26 @@ local function test_reading_screen()
     say("sleep screen shows", cover:match("[^/]*$"))
     if G_reader_settings:readSetting("screensaver_img_background") ~= "white" then fail("no flash before the sleep screen") end
     if G_reader_settings:isTrue("screensaver_stretch_images") then fail("a book's cover is stretched") end
+    -- The cover fills the screen, as CSS's background-size: cover: cut evenly, never a white band.
+    do
+        local Screensaver = require("ui/screensaver")
+        Screensaver:setup("suspend")
+        local image = Screensaver.image
+        if not image or image:getWidth() ~= Screen:getWidth() or image:getHeight() ~= Screen:getHeight() then
+            fail("the cover does not fill the screen")
+        end
+        local middle = math.floor(image:getHeight() / 2)
+        for _, x in ipairs{ 2, image:getWidth() - 3 } do
+            if image:getPixel(x, middle):getR() == 255 then fail("a white band at the side of the cover, at " .. x) end
+        end
+        Screensaver:show()
+        UIManager:forceRePaint()
+        shot("20i-sleep-cover-fills")
+        Screensaver:close_widget()
+        Screensaver:cleanup()
+        require("device").screen_saver_mode = false
+        UIManager:forceRePaint()
+    end
 
     -- One's own picture: until there is one, the cover; then the newest in its folder.
     local Prefs = require("yaknigi/prefs")
