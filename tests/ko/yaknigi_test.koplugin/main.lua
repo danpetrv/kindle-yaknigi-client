@@ -1103,6 +1103,31 @@ local function test_reading_screen()
     tap_widget(settings_row(settings, "sleep_cover_fit"))
     tap_widget(settings.options[1])
     if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "fill" then fail("the cover does not fill again") end
+    -- Stretched: the whole cover over the whole screen, out of shape, nothing cut.
+    tap_widget(settings_row(settings, "sleep_cover_fit"))
+    tap_widget(settings.options[3])
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "stretch" then fail("stretching not chosen") end
+    for _, entry in ipairs(settings:entries()) do
+        if entry.key == "sleep_cover_crop" then fail("where to cut is asked of a stretched cover") end
+    end
+    do
+        local Screensaver = require("ui/screensaver")
+        Screensaver:setup("suspend")
+        local image = Screensaver.image
+        if not image or image:getWidth() ~= Screen:getWidth() or image:getHeight() ~= Screen:getHeight() then
+            fail("the stretched cover does not fill the screen")
+        end
+        local middle, last = math.floor(image:getWidth() / 2), image:getHeight() - 1
+        local top, bottom = 0, 0
+        while top < last and image:getPixel(middle, top):getR() < 40 do top = top + 1 end
+        while bottom < last and image:getPixel(middle, last - bottom):getR() < 40 do bottom = bottom + 1 end
+        if top <= both or bottom == 0 then
+            fail(("the stretched cover is cut: bands %d at the top, %d at the bottom, %d when cut alike"):format(top, bottom, both))
+        end
+        Screensaver:cleanup()
+    end
+    tap_widget(settings_row(settings, "sleep_cover_fit"))
+    tap_widget(settings.options[1])
 
     -- One's own picture: until there is one, the cover; then the newest in its folder.
     local Prefs = require("yaknigi/prefs")
