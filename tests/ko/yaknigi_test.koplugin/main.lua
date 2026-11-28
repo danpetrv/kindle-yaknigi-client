@@ -1059,11 +1059,41 @@ local function test_reading_screen()
         require("device").screen_saver_mode = false
         UIManager:forceRePaint()
     end
+    -- Where it is cut: the test's covers have a black band at the top, seen the more of the more
+    -- of the top is kept.
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_crop") ~= nil then fail("where to cut is set before it was chosen") end
+    local function black_on_top()
+        local Screensaver = require("ui/screensaver")
+        Screensaver:setup("suspend")
+        local image, rows = Screensaver.image, 0
+        if not image then fail("no picture to cut") end
+        local middle = math.floor(image:getWidth() / 2)
+        while rows < image:getHeight() and image:getPixel(middle, rows):getR() < 40 do rows = rows + 1 end
+        Screensaver:cleanup()
+        return rows
+    end
+    local both = black_on_top()
+    tap_widget(settings_row(settings, "sleep_cover_crop"))
+    tap_widget(settings.options[2])
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_crop") ~= "bottom" then fail("cutting at the bottom not chosen") end
+    local top_kept = black_on_top()
+    tap_widget(settings_row(settings, "sleep_cover_crop"))
+    tap_widget(settings.options[3])
+    if G_reader_settings:readSetting("yaknigi_sleep_cover_crop") ~= "top" then fail("cutting at the top not chosen") end
+    local bottom_kept = black_on_top()
+    if not (top_kept > both and both > bottom_kept) then
+        fail(("where it is cut: the band at the top %d / %d / %d rows"):format(top_kept, both, bottom_kept))
+    end
+    tap_widget(settings_row(settings, "sleep_cover_crop"))
+    tap_widget(settings.options[1])
     -- Or whole, as before, if so chosen in the settings: KOReader shows the file itself.
     if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= nil then fail("the cover's fit is set before it was chosen") end
     tap_widget(settings_row(settings, "sleep_cover_fit"))
     tap_widget(settings.options[2])
     if G_reader_settings:readSetting("yaknigi_sleep_cover_fit") ~= "fit" then fail("the whole cover was not chosen") end
+    for _, entry in ipairs(settings:entries()) do
+        if entry.key == "sleep_cover_crop" then fail("where to cut is asked of a whole cover") end
+    end
     do
         local Screensaver = require("ui/screensaver")
         Screensaver:setup("suspend")

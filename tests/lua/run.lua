@@ -1103,5 +1103,14 @@ do
     eq(select(2, TextStyle.without_align({ footnote = true })), false, "nothing to take out")
 end
 
+-- where the cover filling the sleep screen is cut
+do
+    local SleepCover = require("yaknigi/sleepcover")
+    eq(SleepCover.center_y("both"), 0.5, "sleep cover: cut at the top and the bottom alike")
+    eq(SleepCover.center_y("bottom"), 0, "sleep cover: cut at the bottom only, the top kept")
+    eq(SleepCover.center_y("top"), 1, "sleep cover: cut at the top only, the bottom kept")
+    eq(SleepCover.center_y(nil), 0.5, "sleep cover: alike when nothing was chosen")
+end
+
 print(("%d passed, %d failed"):format(passed, failed))
 os.exit(failed == 0 and 0 or 1)
