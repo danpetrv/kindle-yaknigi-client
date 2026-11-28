@@ -145,9 +145,11 @@ function Prefs.sleep_cover_crop()
     return (crop == "bottom" or crop == "top") and crop or "both"
 end
 
+--- Stretched unless chosen otherwise: a cover and the screen differ little in shape, and on paper
+-- the cover pulled to fit reads better than one cut or with bands at its sides.
 function Prefs.sleep_cover_fit()
     local fit = G_reader_settings:readSetting("yaknigi_sleep_cover_fit")
-    return (fit == "fit" or fit == "stretch") and fit or "fill"
+    return (fit == "fill" or fit == "fit") and fit or "stretch"
 end
 
 function Prefs.sleep_minutes()
