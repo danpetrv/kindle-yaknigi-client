@@ -128,7 +128,8 @@ if APP_MODE then
         local result = setup(saver, ...)
         -- A book's cover filling the screen is a picture made now; whole, it is KOReader's own.
         local cover = G_reader_settings:readSetting("yaknigi_last_cover")
-        if Prefs.sleep_cover_fit() == "fill" and saver.screensaver_type == "document_cover"
+        -- KOReader's setup has turned "document_cover" into "cover" by now.
+        if Prefs.sleep_cover_fit() == "fill" and saver.screensaver_type == "cover"
             and cover and saver.image_file == cover then
             local ok, image = pcall(function() return require("yaknigi/sleepcover").render(cover) end)
             if ok and image then
