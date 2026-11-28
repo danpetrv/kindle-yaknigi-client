@@ -86,7 +86,8 @@ function Settings:appRows(heading, choice)
     heading("Сон")
     local sleep_note = "Обложка — книги, открытой последней. Лица русской литературы — случайный портрет. "
         .. "Своя картинка — последний файл JPG или PNG из папки " .. Prefs.OWN_SLEEP_FOLDER
-        .. " в памяти Kindle, а пока её нет, обложка книги."
+        .. " в памяти Kindle, а пока её нет, обложка книги. Заставка Kindle — та, что выбрана в "
+        .. "настройках самого Kindle."
     if Device:isKindle() and not Device:supportsScreensaver() then
         sleep_note = "На Kindle с рекламой заставку показывает сама система"
     end

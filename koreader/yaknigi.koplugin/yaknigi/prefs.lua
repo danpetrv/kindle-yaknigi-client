@@ -9,6 +9,7 @@ Prefs.SLEEP_SCREENS = {
     { "faces", "Лица русской литературы" },
     { "own", "Своя картинка" },
     { "page", "Текущая страница" },
+    { "kindle", "Заставка Kindle" },
 }
 -- The collection comes with the plugin; a picture of one's own is copied over USB.
 Prefs.FACES_DIR = (debug.getinfo(1, "S").source:match("^@(.*)/[^/]*$") or ".") .. "/faces"
@@ -215,7 +216,7 @@ function Prefs.apply_sleep_screen(cover)
         s:saveSetting("screensaver_type", "document_cover")
         s:saveSetting("screensaver_document_cover", own.path)
         fills = true
-    elseif kind ~= "page" and file then
+    elseif kind ~= "page" and kind ~= "kindle" and file then
         s:saveSetting("screensaver_type", "document_cover")
         s:saveSetting("screensaver_document_cover", cover)
     else

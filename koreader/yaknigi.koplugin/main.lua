@@ -119,6 +119,12 @@ if APP_MODE then
         return false
     end
 
+    -- The Kindle's own sleep screen, if so chosen: KOReader then leaves sleep to the Kindle.
+    local Device = require("device")
+    if Device:isKindle() then
+        require("yaknigi/systemsleep").install(Device, function() return Prefs.sleep_screen() == "kindle" end)
+    end
+
     -- Nothing of the picture is to stay on the page: a flash to white, then what was underneath.
     local Screensaver = require("ui/screensaver")
     -- A picture of one's own may have been copied since the app started.
